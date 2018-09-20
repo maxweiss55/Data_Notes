@@ -225,12 +225,237 @@ Control + P       #Navigate to paired symbol
 
 #Packrat#
 
+__________________________________________________________________________
+__________________________________________________________________________
+*****DPLYR: DATA MANIPULATION IN R WITH DPLYR*****
+__________________________________________________________________________
+__________________________________________________________________________
+
+head(df)
+summary(df)
+
+#tbl#
+
+dataframename_tbl <- tbl_df(dataframename)
+
+two <- c("AA", "AS")
+lut <- c("AA" = "American", 
+         "AS" = "Alaska", 
+         "B6" = "JetBlue")
+two <- lut[two]
+two
+
+__________________________________________________________________________
+
+##SELECT##
+#Print only these columns
+
+>>select(df, var1, var2)
+
+select(hflights,ArrDelay,DepDelay)
+select(hflights, UniqueCarrier, FlightNum, TailNum, contains("Cancel"))
+
+starts_with("X"); ends_with("X"); contains("X"); matches("X"); 
+num_range("x", 1:5): the variables named x01, x02, x03, x04 and x05,;
+one_of(x): every name that appears in x, which should be a character vector.
+  
+__________________________________________________________________________
+
+##SELECT##
+#Print only these columns
+
+>>select(df, var1, var2)
+
+select(hflights,ArrDelay,DepDelay)
+select(hflights, UniqueCarrier, FlightNum, TailNum, contains("Cancel"))
+
+starts_with("X"); ends_with("X"); contains("X"); matches("X"); 
+num_range("x", 1:5): the variables named x01, x02, x03, x04 and x05,;
+one_of(x): every name that appears in x, which should be a character vector.
+  
+__________________________________________________________________________
+
+##MUTATE##
+#Add a column
+
+mutate(df, z = x + y)
+
+g2 <- mutate(g1, GroundTime = TaxiIn + TaxiOut)
+
+__________________________________________________________________________
+
+##FILTER##
+#Extract all rows where this is true
+
+mutate(df, z = x + y)
+
+g2 <- mutate(g1, GroundTime = TaxiIn + TaxiOut)
+
+# All flights flown by one of JetBlue, Southwest, or Delta
+filter(hflights, UniqueCarrier %in% c("JetBlue", "Southwest", "Delta"))
+
+__________________________________________________________________________
+
+##ARRANGE##
+#Arrange
+
+mutate(df,var)
+
+# Arrange dtc according to carrier and departure delays
+arrange(dtc, UniqueCarrier, DepDelay)
+
+__________________________________________________________________________
+
+##SUMMARISE##
+#Summarise
+
+summarise(df, name = agg_funct())
+
+Aggregate Functions:
+first(x) - The first element of vector x.
+last(x) - The last element of vector x.
+nth(x, n) - The nth element of vector x.
+n() - The number of rows in the data.frame or group of observations that summarise() describes.
+n_distinct(x) - The number of unique values in vector x.
+
+summarise(hflights, 
+          n_obs = n(), 
+          n_carrier = n_distinct(UniqueCarrier), 
+          n_dest = n_distinct(Dest))
+
+__________________________________________________________________________
+
+##PIPE##
+#Pipe
+
+%>%
+
+hflights
+hflights %>%
+  mutate(RealTime = ActualElapsedTime + 100) %>%
+  mutate(mph = Distance / RealTime * 60) %>%
+  filter(!is.na(mph)) %>%
+  filter(mph < 70) %>%
+  summarize(
+            n_less=n(),
+            n_dest=n_distinct(Dest),
+            min_dist=min(Distance),
+            max_dist=max(Distance)
+            )
+__________________________________________________________________________
+
+##GROUP_BY##
+#Group
+
+group_by(df, var)
+
+hflights %>%
+  filter(!is.na(ArrDelay)) %>%
+  filter(ArrDelay > 0 ) %>%
+  group_by(UniqueCarrier) %>%
+  summarise(avg = mean(ArrDelay)) %>%
+  mutate(rank = rank(avg)) %>%
+  arrange(rank)
+
+__________________________________________________________________________
+__________________________________________________________________________
+*****REPORTING WITH R MARKDOWN*****
+__________________________________________________________________________
+__________________________________________________________________________
+
+##Styling narrative sections##
+
+You can use Markdown to embed formatting instructions into your text. For example, you can make a word italicized by surrounding it in asterisks, bold by surrounding it in two asterisks, and monospaced (like code) by surrounding it in backticks:
+
+*italics*
+**bold**
+`code`
+
+You can turn a word into a link by surrounding it in hard brackets and then placing the link behind it in parentheses, like this:
+
+[RStudio](www.rstudio.com)
+
+To create titles and headers, use leading hastags. The number of hashtags determines the header's level:
+
+# First level header
+## Second level header
+### Third level header
+
+To make a bulleted list in Markdown, place each item on a new line after an asterisk and a space, like this:
+
+* item 1
+* item 2
+* item 3
+
+You can make an ordered list by placing each item on a new line after a number followed by a period followed by a space, like this
+
+1. item 1
+2. item 2
+3. item 3
+
+To embed an equation in its own centered equation block, surround the equation with two pairs of dollar signs like this,
+
+$$1 + 1 = 2$$
+To embed an equation inline, surround it with a single pair of dollar signs, like this: $1 + 1 = 2$
+
+__________________________________________________________________________
+
+Knitr
+
+```{r}
+# some code
+```
+
+```{r warning = FALSE, error = FALSE}
+"four" + "five"
+```
+
+If echo = FALSE, R Markdown will not display the code in the final document 
+(but it will still run the code and display its results unless told otherwise).
+
+If eval = FALSE, R Markdown will not run the code or include its results, 
+(but it will still display the code unless told otherwise).
+
+If results = 'hide', R Markdown will not display the results of the code 
+(but it will still run the code and display the code itself unless told otherwise).
 
 
+The factorial of four is `r factorial(4)`.
 
+```{r ref.label='simple_sum', echo = FALSE}
+```
 
+changing the output field to:
 
+---
+output: beamer_presentation
+---
+which creates a beamer pdf slideshow,
 
+---
+output: ioslides_presentation
+---
+which creates an ioslides HTML slideshow or
 
+---
+output: slidy_presentation
+---
+which creates a slidy HTML slideshow.
 
+R Markdown will start a new slide at each first or second level header in your document. You can insert additional slide breaks with Markdown's horizontal rule syntax:
 
+***
+
+Everywhere you add these three asterisks in your text, pandoc will create a new slide.
+
+pdf_document template to create a document that uses the zenburn style:
+
+    ---
+    title: "Demo"
+    output:
+      pdf_document:
+        highlight: zenburn
+    ---
+__________________________________________________________________________
+
+SHINY????
