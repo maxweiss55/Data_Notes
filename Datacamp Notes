@@ -459,3 +459,94 @@ pdf_document template to create a document that uses the zenburn style:
 __________________________________________________________________________
 
 SHINY????
+
+__________________________________________________________________________
+__________________________________________________________________________
+*****THE SHELL: Intro to Shell for Datascience*****
+__________________________________________________________________________
+__________________________________________________________________________
+
+pwd #Where am I? Print working directory.
+
+ls      #listing what is in current directory
+ls /argument      #listing what is in this directory
+ls /home/repl/seasonal
+
+"/" slash at front means absolute path; without is relative (shortened) path
+
+cd      #switch to new directory
+cd directory      #switch to indicated directoryls
+
+..      #means parent directory/directory above
+.       #means current directory
+~       #Your home directory
+
+cp filedirectry newfiledirectory      #copy filedirectory to new filedirectory
+
+mv filedirectry newfiledirectory      #move filedirectory to new file
+
+mv course.txt old-course.txt      #rename file
+
+rm filename      #remove file
+
+rmdir       #remove directory
+
+mkdir directory_name      #make new directory
+
+/tmp      #make new temporary directory
+
+cat file      #show contents of file
+
+You can use cat to print large files and then scroll through the output, 
+but it is usually more convenient to page the output. 
+The original command for doing this was called more, 
+but it has been superseded by a more powerful command called less. 
+When you less a file, one page is displayed at a time; 
+you can press spacebar to page down or type q to quit.
+
+If you give less the names of several files, 
+you can type :n (colon and a lower-case 'n') to move to the next file, 
+:p to go back to the previous one, or :q to quit.
+
+head file       #see start of file
+head -n 3 seasonal/summer.csv
+
+ls -R -F      #Show every file in current directory and subdirectory
+
+cut -f 2-5,8 -d , values.csv      #select certain rows from a file
+
+grep can search for patterns as well; we will explore those in the next course. What's more important right now is some of grep's more common flags:
+
+-c: print a count of matching lines rather than the lines themselves
+-h: do not print the names of files when searching multiple files
+-i: ignore case (e.g., treat "Regression" and "regression" as matches)
+-l: print the names of files that contain matches, not the matches
+-n: print line numbers for matching lines
+-v: invert the match, i.e., only show lines that don't match
+
+As its name suggests, sort puts data in order.
+
+Another command that is often used with sort is uniq, whose job is to remove duplicated lines. 
+
+"|" is the pipe operator
+
+Variable	Purpose	Value
+HOME	User's home directory	/home/repl
+PWD	Present working directory	Same as pwd command
+SHELL	Which shell program is being used	/bin/bash
+USER	User's ID	repl
+
+echo      #will print out what follows
+Varname = something      #set variable
+$varname      #print what the variable is saved as
+
+for filename in seasonal/*.csv; do echo $filename; done
+
+nano filename     #text editor
+
+
+
+
+
+
+
