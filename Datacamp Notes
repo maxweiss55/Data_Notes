@@ -489,7 +489,7 @@ mv course.txt old-course.txt      #rename file
 
 rm filename      #remove file
 
-rmdir       #remove directory
+rmdir       #directory
 
 mkdir directory_name      #make new directory
 
@@ -546,10 +546,84 @@ nano filename     #text editor
 
 __________________________________________________________________________
 __________________________________________________________________________
-*****INTRO TO GIT RSTUDIO*****
+*****DATA IN TIDYVERSE*****
 __________________________________________________________________________
 __________________________________________________________________________
 
+library(readr)
+
+read_csv("Path")      #read in a csv
+name <- read_csv("Path")
+
+read_csv("Path", skip = 1)      #Skip the first row (regarding heading esp.)
+
+is.na() 1     #Identify rows with missing data
+
+bakeoff %>%
+  filter(!is.na(us_season))     #Filter to only the rows where us_season is NOT (!) MISSING
+
+glimpse(datatablename)      #glimpse the whole table
+
+library(skimr)
+skim(datatablename)       #Do some quick skimming of each column
+
+distinct(variable)    #Show the distinct values for given variable
+
+count(variable)     #Count the number of each distinct value for given variable
+
+Can also do logical condition... count(variable == "Value")
+
+Cast Column Types / Parsing:
+parse_number("36 years")      #Will return 36 (Look up how to do date stuff)
+
+desserts <- read_csv("desserts.csv",
+                      col_types = cols(technical = col_number()),       #Cast Column type (number)
+                      na = c("", "NA", "N/A"))        #This defines what empty cells are defined as.First two = default
+
+desserts <- desserts %>% 
+  mutate(tech_win = recode(technical, `1` = 1, .default = 0))
+  
+ratings %>% 
+  select(channel, everything())       #keep everything but move channel column to the front
+
+library(tidyr)
+
+
+GATHER
+
+Untidy_data %>%
+  gather(key = "keycolumnname", value = "valuecolumnname", column_1:column_7)
+
+tidy_ratings <- ratings %>%
+    gather(key = "episode", value = "viewers_7day", -series, 
+           factor_key = TRUE, na.rm = TRUE) %>% 
+    arrange(series, episode) %>% 
+    mutate(episode_count = row_number()) 
+    
+SEPARATE
+
+juniors_untidy %>%
+  separate(col = spice, into = c('spice', 'order'), convert = TRUE)
+            #column you have      #columns you want
+
+UNITE
+  unite()     #opposite of spread
+  
+SPREAD
+
+juniors_jumbled %>%
+  spread(key = key, value = value, convert = TRUE)
+
+tidy_ratings_all <- ratings2 %>%
+    gather(episode, viewers, ends_with("day"), na.rm = TRUE) %>% 
+    separate(episode, into = c("episode", "days")) %>%  
+    mutate(episode = parse_number(episode),
+           days = parse_number(days))
+
+juniors_multi %>% 
+  gather(key = "key", value = "value", score_1:guess_3) %>% 
+  separate(key, into = c("var", "order"), convert = TRUE) %>% 
+  spread(var, value)
 
 
 
