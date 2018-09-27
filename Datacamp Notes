@@ -627,7 +627,7 @@ juniors_multi %>%
 
 __________________________________________________________________________
 __________________________________________________________________________
-*****MODELLING*****
+*****MODELLING TIDYVERSE*****
 __________________________________________________________________________
 __________________________________________________________________________
 
@@ -702,8 +702,107 @@ get_regression_points(model_price_1) %>%
 # Mean squared error: use mean() instead of sum():
 get_regression_points(model_price_1) %>%
   mutate(sq_residuals = residual^2) %>%
-  summarize(mse = mean(sq_residuals))
+  summarize(mse = mean(sq_residuals))%>%
+  mutate(rmse = sqrt(mse))
+ 
+# Recreate data frame of "new" houses
+new_houses <- data_frame(
+  log10_size = c(2.9, 3.6),
+  condition = factor(c(3, 4))
+)
+
+get_regression_points(model_price_3, newdata = new_houses)
+ 
+# Randomly shuffle order of rows:
+house_prices_shuffled <- house_prices %>% 
+  sample_frac(size = 1, replace = FALSE)
+# Split into train and test:
+train <- house_prices_shuffled %>%
+  slice(1:10000)
+test <- house_prices_shuffled %>%
+  slice(10001:21613)
   
+# Train model on train:
+train_model_price_1 <- lm(log10_price ~ log10_size + yr_built,
+                          data = train)
+
+# Get predictions on test:
+get_regression_points(train_model_price_1, newdata = test)
+
+# Train model:
+train_model_price_3 <- lm(log10_price ~ log10_size + condition,
+                          data = train)
+
+# Get predictions and compute RMSE:
+get_regression_points(train_model_price_3, newdata = test) %>%
+  mutate(sq_residuals = residual^2) %>%
+  summarize(rmse = sqrt(mean(sq_residuals)))
+
+__________________________________________________________________________
+__________________________________________________________________________
+*****WORKING WITH WEB DATA*****
+__________________________________________________________________________
+__________________________________________________________________________
+
+read.csv("http://website.url/remote-file.csv")
+
+download.file(
+    url = "http://website.url/remote-file.csv", 
+    destfile = "local-file.csv"
+)
+
+# Add a new column: square_weight
+csv_data$square_weight <- (csv_data$weight)^2
+
+# Save it to disk with saveRDS()
+saveRDS(object = csv_data, file = "modified_feed_data.RDS")
+
+# Read it back in with readRDS()
+modified_feed_data <- readRDS(file ="modified_feed_data.RDS")
+
+# Examine modified_feed_data
+str(modified_feed_data)
+
+library(pageviews)
+article_pageviews(article = "R_(programming_language)")
+
+response <- GET(url = "https://httpbin.org/get")
+content(response)
+post_result <- POST(url = "http://httpbin.org/post", body = "this is a test")
+
+# Construct a directory-based API URL to `http://swapi.co/api`,
+# looking for person `1` in `people`
+directory_url <- paste("http://swapi.co/api", "people", 1, sep = "/")
+
+# Make a GET call with it
+result <- GET(url = directory_url)
+
+library(httr)
+url <- "http://httpbin.org/get"
+r <- GET(url)
+http_type(r)
+
+writeLines(content(r, as = "text"))
+
+XPATH	Meaning
+/node	Elements with tag node at this level
+//node	Elements with tag node anywhere at or below this level
+@attr	Attribute with name attr
+ 
+
+Get nodes with xml_find_all()
+Extract contents with xml_double(), xml_integer() or as_list()
+
+fromJSON(movies_json, simplifyVector = FALSE)
+
+read_html(url = ___)
+
+html_node()
+
+html_text(x = ___) - get text contents
+html_attr(x = ___, name = ___) - get specific attribute
+html_name(x = ___) - get tag name
+
 
 
 
