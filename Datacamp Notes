@@ -625,7 +625,85 @@ juniors_multi %>%
   separate(key, into = c("var", "order"), convert = TRUE) %>% 
   spread(var, value)
 
+__________________________________________________________________________
+__________________________________________________________________________
+*****MODELLING*****
+__________________________________________________________________________
+__________________________________________________________________________
 
+# Code to create scatterplot
+ggplot(evals, aes(x = age, y = score)) +
+  geom_point() + 
+  labs(x = "age", y = "score", title = "Teaching score over age")
+# Add a "best-fitting" line
+ggplot(evals, aes(x = age, y = score)) +
+  geom_point() + 
+  labs(x = "age", y = "score", title = "Teaching score over age") +
+  geom_smooth(method = "lm", se = FALSE)
+  
+  
+# Fit regression model using formula of form: y ~ x
+model_score_1 <- lm(score ~ age, data = evals)
+# Output contents
+model_score_1
+Call:
+lm(formula = score ~ age, data = evals)
+
+   
+# Fit regression model using formula of form: y ~ x
+model_score_1 <- lm(score ~ age, data = evals)
+
+# Output regression table using wrapper function:
+get_regression_table(model_score_1)
+
+# Fit regression model using formula of form: y ~ x
+model_score_1 <- lm(score ~ age, data = evals)
+# Get information on each point
+get_regression_points(model_score_1)
+
+# Fit regression model
+model_score_3 <- lm(score ~ gender, data = evals)
+
+# Get regression points
+model_score_3_points <- get_regression_points(model_score_3)
+model_score_3_points
+# Plot residuals
+ggplot(model_score_3_points, aes(x = residual)) +
+  geom_histogram() +
+  labs(x = "residuals", title = "Residuals from score ~ gender model")
+
+# Fit regression model using formula of form: y ~ x1 + x2
+model_price_1 <- lm(log10_price ~ log10_size + yr_built, 
+                    data = house_prices)
+# Output regression table
+get_regression_table(model_price_1)
+
+# Create data frame of "new" houses
+new_houses <- data_frame(
+  log10_size = c(2.9, 3.6),
+  condition = factor(c(3, 4))
+)
+new_houses
+
+get_regression_points(model_price_3, newdata = new_houses)
+
+model_price_3 <- lm(log10_price ~ log10_size + condition, 
+                    data = house_prices)
+get_regression_points(model_price_3) %>%
+  mutate(sq_residuals = residual^2) %>%
+  summarize(sum_sq_residuals = sum(sq_residuals))
+  
+summarize(r_squared = 1 - var(residual) / var(log10_price))
+
+get_regression_points(model_price_1) %>%
+  mutate(sq_residuals = residual^2) %>%
+  summarize(sum_sq_residuals = sum(sq_residuals))
+  
+# Mean squared error: use mean() instead of sum():
+get_regression_points(model_price_1) %>%
+  mutate(sq_residuals = residual^2) %>%
+  summarize(mse = mean(sq_residuals))
+  
 
 
 
