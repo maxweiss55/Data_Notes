@@ -804,5 +804,188 @@ html_attr(x = ___, name = ___) - get specific attribute
 html_name(x = ___) - get tag name
 
 
+__________________________________________________________________________
+__________________________________________________________________________
+*****CORRELATION AND REGRESSION*****
+__________________________________________________________________________
+__________________________________________________________________________
+
+If it is helpful, you can think of boxplots as scatterplots for 
+which the variable on the x-axis has been discretized.
+
+The cut() function takes two arguments: the continuous variable you want to 
+<<DISCRETIZE>> and the number of breaks that you want to make in that continuous 
+variable in order to discretize it.
+
+ggplot(data = ncbirths, 
+       aes(x = cut(weeks, breaks = 5), y = weight)) + 
+  geom_boxplot()
+  
+CORRELATION
+
+# Compute correlation
+ncbirths %>%
+  summarize(N = n(), r = cor(weight, mage))
+
+# Compute correlation for all non-missing pairs
+ncbirths %>%
+  summarize(N = n(), r = cor(weight, weeks, use = "pairwise.complete.obs"))
+
+ggplot(data = bdims, aes(x = hgt, y = wgt)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE)
+
+LINEAR MODEL
+
+mod <- lm(wgt ~ hgt, data = bdims)
+
+# Show the coefficients
+coef(mod)
+
+# Show the full output
+summary(mod)
+
+fitted.values(mod)
+
+residuals(mod)
+
+# Load broom
+library(broom)
+
+# Create bdims_tidy
+bdims_tidy = augment(mod)
+
+# Glimpse the resulting data frame
+glimpse(bdims_tidy)
+
+predict(mod, newdataframe)
+
+# Compute RMSE
+sqrt(sum(residuals(mod)^2) / df.residual(mod))
+
+# View model summary
+summary(mod)
+
+# Compute R-squared
+bdims_tidy %>%
+  summarize(var_y = var(wgt), var_e = var(residuals(mod))) %>%
+  mutate(R_squared = 1 - var_e / var_y)
+  
+# Rank points of high leverage
+mod %>%
+  augment() %>%
+  arrange(desc(.hat)) %>%
+  head()
+
+#Rank influential points
+mod %>%
+  augment() %>%
+  arrange(desc(.cooksd)) %>%
+  head()
+
+__________________________________________________________________________
+__________________________________________________________________________
+*****SHINY*****
+__________________________________________________________________________
+__________________________________________________________________________
+
+library(shiny)
+library(ggplot2)
+load(url("http://s3.amazonaws.com/assets.datacamp.com/production/course_4850/datasets/movies.Rdata"))
+
+# Define UI for application that plots features of movies 
+ui <- fluidPage(
+  
+  # Sidebar layout with a input and output definitions 
+  sidebarLayout(
+    
+    # Inputs
+    sidebarPanel(
+      
+      # Select variable for y-axis
+      selectInput(inputId = "y", 
+                  label = "Y-axis:",
+                  choices = c("imdb_rating", "imdb_num_votes", "critics_score", "audience_score", "runtime"), 
+                  selected = "audience_score"),
+      # Select variable for x-axis
+      selectInput(inputId = "x", 
+                  label = "X-axis:",
+                  choices = c("imdb_rating", "imdb_num_votes", "critics_score", "audience_score", "runtime"), 
+                  selected = "critics_score")
+    ),
+    
+    # Outputs
+    mainPanel(
+      plotOutput(outputId = "scatterplot")
+    )
+  )
+)
+
+# Define server function required to create the scatterplot
+server <- function(input, output) {
+
+  # Create scatterplot object the plotOutput function is expecting
+  output$scatterplot <- renderPlot({
+    ggplot(data = movies, aes_string(x = input$x, y = input$y)) +
+      geom_point()
+  })
+}
+
+# Create a Shiny app object
+shinyApp(ui = ui, server = server)
 
 
+_______________________________________________________
+
+library(shiny)
+library(ggplot2)
+load(url("http://s3.amazonaws.com/assets.datacamp.com/production/course_4850/datasets/movies.Rdata"))
+
+# Define UI for application that plots features of movies
+ui <- fluidPage(
+  
+  # Sidebar layout with a input and output definitions
+  sidebarLayout(
+    
+    # Inputs
+    sidebarPanel(
+      
+      # Select variable for y-axis
+      selectInput(inputId = "y", 
+                  label = "Y-axis:",
+                  choices = c("imdb_rating", "imdb_num_votes", "critics_score", "audience_score", "runtime"), 
+                  selected = "audience_score"),
+      
+      # Select variable for x-axis
+      selectInput(inputId = "x", 
+                  label = "X-axis:",
+                  choices = c("imdb_rating", "imdb_num_votes", "critics_score", "audience_score", "runtime"), 
+                  selected = "critics_score"),
+      
+      # Select variable for color
+      selectInput(inputId = "z", 
+                  label = "Color by:",
+                  choices = c("title_type", "genre", "mpaa_rating", "critics_rating", "audience_rating"),
+                  selected = "mpaa_rating")
+    ),
+    
+    # Outputs
+    mainPanel(
+      plotOutput(outputId = "scatterplot")
+    )
+  )
+)
+
+# Define server function required to create the scatterplot
+server <- function(input, output) {
+  
+  # Create the scatterplot object the plotOutput function is expecting
+  output$scatterplot <- renderPlot({
+    ggplot(data = movies, aes_string(x = input$x, y = input$y,
+                                     color = input$z)) +
+      geom_point()
+  })
+}
+
+# Create a Shiny app object
+shinyApp(ui = ui, server = server)
