@@ -989,3 +989,154 @@ server <- function(input, output) {
 
 # Create a Shiny app object
 shinyApp(ui = ui, server = server)
+
+__________________________________________________________________________
+__________________________________________________________________________
+*****DATA CLEANING*****
+__________________________________________________________________________
+__________________________________________________________________________
+
+gather(widedf, my_key, my_value, columnstogatherornottogather)
+
+spread(longdf, my_key, my_value)
+
+
+
+bmi_cc_clean <- separate(bmi_cc, col = Country_ISO, into = c("Country", "ISO"), sep = "/")
+
+bmi_cc <- unite(bmi_cc_clean, Country_ISO, Country, ISO, sep = "-")
+
+
+
+TYPES
+
+as.character(2016)
+>"2016"
+
+as.numeric(TRUE)
+>1
+
+as.integer(99)
+>99
+
+as.factor("something")
+>something
+Levels: something
+
+as.logical(0)
+>FALSE
+
+students$Grades <- as.character(students$Grades)
+students$Fedu <- as.factor(students$Fedu)
+
+
+LUBRDIDATE 
+
+# Load the lubridate package
+library(lubridate)
+ymd_hms("2016, August 5, 12:59:02")
+
+# Parse as date
+dmy("17 Sep 2015")
+
+# Parse as date and time (with no seconds!)
+mdy_hm("July 15, 2012 12:56")
+
+
+STRINGR
+
+library(stringr
+
+# Load the stringr package
+library(stringr)
+
+# Trim all leading and trailing whitespace
+str_trim(c("   Filip ", "Nick  ", " Jonathan"))
+
+# Pad these strings with leading zeros
+str_pad(c("23485W", "8823453Q", "994Z"), width = 9, side = "left", pad = "0")
+
+# Print state abbreviations
+print(states)
+
+# Make states all uppercase and save result to states_upper
+states_upper <- toupper(states)
+
+# Make states_upper all lowercase again
+tolower(states_upper)
+
+
+MISSING VALUES
+
+# Call is.na() on the full social_df to spot all NAs
+is.na(social_df)
+
+# Use the any() function to ask whether there are any NAs in the data
+any(is.na(social_df))
+
+# View a summary() of the dataset
+summary(social_df)
+
+# Call table() on the status column
+table(social_df$status)
+
+## The stringr package is preloaded
+
+# Replace all empty strings in status with NA
+social_df$status[social_df$status == ""] <- NA
+
+# Print social_df to the console
+print(social_df)
+
+# Use complete.cases() to see which rows have no missing values
+complete.cases(social_df)
+
+# Use na.omit() to remove all rows with any missing values
+na.omit(social_df)
+
+# Count missing values
+sum(is.na(weather6))
+
+# Find missing values
+summary(weather6)
+
+# Find indices of NAs in Max.Gust.SpeedMPH
+ind <- which(is.na(weather6$Max.Gust.SpeedMPH))
+
+# Look at the full rows for records missing Max.Gust.SpeedMPH
+weather6[ind, ]
+
+# Review distributions for all variables
+summary(weather6)
+
+# Find row with Max.Humidity of 1000
+ind <- which(weather6$Max.Humidity == 1000)
+
+# Look at the data for that day
+weather6[ind, ]
+
+# Change 1000 to 100
+weather6$Max.Humidity[ind] <- 100
+
+# Look at summary of Mean.VisibilityMiles
+summary(weather6$Mean.VisibilityMiles)
+
+# Get index of row with -1 value
+ind <- which(weather6$Mean.VisibilityMiles == -1)
+
+# Look at full row
+weather6[ind, ]
+
+# Set Mean.VisibilityMiles to the appropriate value
+weather6$Mean.VisibilityMiles[ind] <- 10
+
+# Clean up column names
+names(weather6) <- new_colnames
+
+# Replace empty cells in events column
+weather6$events[weather6$events == ""] <- "None"
+    
+# Print the first 6 rows of weather6
+head(weather6, 6)
+
+
