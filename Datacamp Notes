@@ -1407,3 +1407,36 @@ admit <- admit %>%
 
 library(RColorBrewer)
 display.brewer.all()
+
+__________________________________________________________________________
+__________________________________________________________________________
+***** STRINGR *****
+__________________________________________________________________________
+__________________________________________________________________________
+
+# Format c(1.0011, 2.011, 1) with digits = 1
+format(c(1.0011, 2.011, 1), digits = 1)
+
+writeLines(rows)
+
+paste("$", pretty_income, sep = "")
+
+str_c() same as paste basically but better
+
+boy_first_letter <- str_sub(boy_names, 0, 1)
+
+str_c()
+str_length()
+str_sub()
+str_detect()
+str_subset()
+str_count()
+str_split()
+str_replace()
+
+
+
+
+
+
+
