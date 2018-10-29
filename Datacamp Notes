@@ -1524,4 +1524,141 @@ sentiment_counts %>%
     filter(sentiment == "negative") %>%
     arrange(percent)
     
- 
+__________________________________________________________________________
+__________________________________________________________________________
+***** WRITING FUNCTIONS *****
+__________________________________________________________________________
+__________________________________________________________________________
+
+# Define ratio() function
+ratio <- function(x, y) {
+  x/y
+}
+
+# Call ratio() with arguments 3 and 4
+ratio(3,4)
+
+# Create an empty data frame
+empty_df <- data.frame()
+
+# Repeat for loop to verify there is no error
+for (i in seq_along(empty_df)) {
+  print(median(empty_df[[i]]))
+  
+# Create new double vector: output
+output <- vector("double", ncol(df))
+
+# Alter the loop
+for (i in seq_along(df)) {
+  # Change code to store result in output
+  output[i] <- median(df[[i]])
+}
+
+# Print output
+output
+
+# Define example vector x
+x <- c(1:10, NA) 
+
+# Use the function template to create the rescale01 function
+rescale01 <- function(x) {
+  # body
+  rng <- range(x, na.rm = TRUE) 
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+# Test your function, call rescale01 using the vector x as the argument
+rescale01(x)
+
+# Define example vectors x and y
+x <- c( 1, 2, NA, 3, NA)
+y <- c(NA, 3, NA, 3,  4)
+
+# Count how many elements are missing in both x and y
+both_na <- function(x, y) {
+  sum(is.na(x) & is.na(y))
+}
+
+both_na(x, y)
+
+# Alter the arguments to mean_ci
+mean_ci <- function(x, level = .95) {
+  se <- sd(x) / sqrt(length(x))
+  alpha <- 1 - level
+  mean(x) + se * qnorm(c(alpha / 2, 1 - alpha / 2))
+}
+
+mean_ci <- function(x, level = 0.95) {
+  if (length(x) != 0) {
+    se <- sd(x) / sqrt(length(x))
+    alpha <- 1 - level
+    mean(x) + se * qnorm(c(alpha / 2, 1 - alpha / 2)) 
+  } else {
+      warning("`x` was empty", call. = FALSE)
+    interval <- c(-Inf, Inf)
+}}
+
+replace_missings <- function(x, replacement) {
+  # Define is_miss
+  is_miss <- is.na(x)
+  
+  # Rewrite rest of function to refer to is_miss
+  x[is_miss] <- replacement
+  cat(sum(is_miss), replacement, "\n")
+  x
+}
+
+replace_missings <- function(x, replacement) {
+  is_miss <- is.na(x)
+  x[is_miss] <- replacement
+  
+  # Rewrite to use message()
+  message(sum(is_miss), " missings replaced by the value ", replacement)
+  x
+}
+
+# Check your new function by running on df$z
+replace_missings(df$z, 0)
+
+
+col_median <- function(df) {
+  output <- numeric(ncol(df))
+  for (i in seq_along(df)) {
+    output[[i]] <- median(df[[i]])
+  }
+  output
+}
+
+
+# Load the purrr package
+library(purrr)
+
+# Use map_dbl() to find column means
+map_dbl(df, mean)
+
+# Use map_dbl() to column medians
+map_dbl(df, median)
+
+# Use map_dbl() to find column standard deviations
+map_dbl(df, sd)
+
+# Find the columns that are numeric
+map_lgl(df3, is.numeric)
+
+# Find the type of each column
+map_chr(df3, typeof)
+
+# Find a summary of each column
+map(df3, summary)
+
+
+# Rewrite to call an anonymous function
+map(cyl, function(df) lm(mpg ~ wt, data = df))
+
+# Rewrite to use the formula shortcut instead
+map(cyl, ~ lm(mpg ~ wt, data = .))
+
+
+
+
+
