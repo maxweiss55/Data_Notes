@@ -1659,6 +1659,42 @@ map(cyl, function(df) lm(mpg ~ wt, data = df))
 map(cyl, ~ lm(mpg ~ wt, data = .))
 
 
+# Create a list n containing the values: 5, 10, and 20
+n <- list(5, 10, 20)
+
+# Call map() on n with rnorm() to simulate three samples iterate over this
+map(n, rnorm)
+
+# Create a list mu containing the values: 1, 5, and 10
+mu <- list(1,5,10)
+
+# Edit to call map2() on n and mu with rnorm() to simulate three samples
+map2(n, mu, rnorm)
+
+# Create a sd list with the values: 0.1, 1 and 0.1
+sd <- list(.1, 1, .1)
+
+# Edit this call to pmap() to iterate over the sd list as well
+pmap(list(n, mu, sd), rnorm)
+pmap(list(mean = mu, n = n, sd = sd), rnorm)
+
+
+# Define list of functions
+funs <- list(Normal = "rnorm", Uniform = "runif", Exp = "rexp")
+
+# Define params
+params <- list(
+  Normal = list(mean = 10),
+  Uniform = list(min = 0, max = 5),
+  Exp = list(rate = 5)
+)
+
+# Assign the simulated samples to sims
+sims <- invoke_map(funs, params, n = 50)
+
+# Use walk() to make a histogram of each element in sims
+walk(sims, hist)
+
 
 
 
